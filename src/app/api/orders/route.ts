@@ -1,4 +1,6 @@
 import { NextRequest } from "next/server";
+import { envConfig } from "@/config";
+
 import { proxyJson } from "@/lib/next-api-auth";
 import { emitOrderCreated } from "@/lib/sse-broadcaster";
 
@@ -10,7 +12,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Kiểm tra environment variable
-    if (!process.env.NEXT_PUBLIC_API_END_POINT) {
+    if (!envConfig.NEXT_PUBLIC_API_END_POINT) {
       console.error("NEXT_PUBLIC_API_END_POINT is not defined");
       return new Response(
         JSON.stringify({ message: "Backend URL not configured" }),
@@ -76,7 +78,7 @@ export async function PUT(request: NextRequest) {
     }
 
     return proxyJson(
-      `${process.env.NEXT_PUBLIC_API_END_POINT}/orders/${orderId}`,
+      `${envConfig.NEXT_PUBLIC_API_END_POINT}/orders/${orderId}`,
       request,
       {
         method: "PUT",
@@ -96,7 +98,7 @@ export async function PUT(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    if (!process.env.NEXT_PUBLIC_API_END_POINT) {
+    if (!envConfig.NEXT_PUBLIC_API_END_POINT) {
       console.error("NEXT_PUBLIC_API_END_POINT is not defined");
       return new Response(
         JSON.stringify({ message: "Backend URL not configured" }),
@@ -108,7 +110,7 @@ export async function POST(request: NextRequest) {
     }
     const body = await request.json();
     const response = await proxyJson(
-      `${process.env.NEXT_PUBLIC_API_END_POINT}/orders`,
+      `${envConfig.NEXT_PUBLIC_API_END_POINT}/orders`,
       request,
       {
         method: "POST",

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { envConfig } from "@/config";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,9 +19,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Resolve backend base URL with safe fallback
+    // Resolve backend base URL with safe fallback (read from envConfig)
     const baseUrl =
-      process.env.NEXT_PUBLIC_API_END_POINT || "http://localhost:8081/api/v1";
+      envConfig.NEXT_PUBLIC_API_END_POINT ||
+      `${envConfig.NEXT_PUBLIC_BACKEND_URL}/api/${envConfig.NEXT_PUBLIC_API_VERSION}`;
 
     // Forward to backend
     const res = await fetch(`${baseUrl}/auth/login`, {

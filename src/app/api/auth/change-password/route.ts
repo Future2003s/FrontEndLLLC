@@ -1,16 +1,17 @@
 import { NextRequest } from "next/server";
 import { proxyJson } from "@/lib/next-api-auth";
+import { envConfig } from "@/config";
 
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    
+
     // Validate required fields
     if (!body.currentPassword || !body.newPassword) {
       return new Response(
         JSON.stringify({
           success: false,
-          error: "Missing required fields: currentPassword, newPassword"
+          error: "Missing required fields: currentPassword, newPassword",
         }),
         {
           status: 400,
@@ -20,7 +21,7 @@ export async function PUT(request: NextRequest) {
     }
 
     return proxyJson(
-      `${process.env.NEXT_PUBLIC_API_END_POINT}/auth/change-password`,
+      `${envConfig.NEXT_PUBLIC_API_END_POINT}/auth/change-password`,
       request,
       {
         method: "PUT",
@@ -34,7 +35,7 @@ export async function PUT(request: NextRequest) {
     return new Response(
       JSON.stringify({
         success: false,
-        error: "Internal server error"
+        error: "Internal server error",
       }),
       {
         status: 500,

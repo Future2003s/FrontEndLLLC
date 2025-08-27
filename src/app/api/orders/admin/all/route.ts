@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { proxyJson } from "@/lib/next-api-auth";
+import { envConfig } from "@/config";
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,7 +10,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Kiểm tra environment variable
-    if (!process.env.NEXT_PUBLIC_API_END_POINT) {
+    if (!envConfig.NEXT_PUBLIC_API_END_POINT) {
       console.error("NEXT_PUBLIC_API_END_POINT is not defined");
       return new Response(
         JSON.stringify({ message: "Backend URL not configured" }),
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
     }
 
     const url = new URL(
-      `${process.env.NEXT_PUBLIC_API_END_POINT}/orders/admin/all`
+      `${envConfig.NEXT_PUBLIC_API_END_POINT}/orders/admin/all`
     );
 
     // Copy all search params

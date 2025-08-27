@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { envConfig } from "@/config";
 
 // GET current user by forwarding cookie token to backend
 export async function GET() {
@@ -11,7 +12,8 @@ export async function GET() {
     }
 
     const baseUrl =
-      process.env.NEXT_PUBLIC_API_END_POINT || "http://localhost:8081/api/v1";
+      envConfig.NEXT_PUBLIC_API_END_POINT ||
+      `${envConfig.NEXT_PUBLIC_BACKEND_URL}/api/${envConfig.NEXT_PUBLIC_API_VERSION}`;
     const res = await fetch(`${baseUrl}/auth/me`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
