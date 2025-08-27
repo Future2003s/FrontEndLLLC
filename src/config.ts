@@ -86,4 +86,30 @@ if (!envConfig.NEXT_PUBLIC_API_ENDPOINT) {
   envConfig.NEXT_PUBLIC_API_ENDPOINT = envConfig.NEXT_PUBLIC_API_END_POINT;
 }
 
-export { envConfig };
+// export { envConfig }; // replaced by strict export below
+
+// Create a strict typed view so downstream code sees required strings
+export type EnvConfigStrict = {
+  NEXT_PUBLIC_URL: string;
+  NEXT_PUBLIC_API_ENDPOINT?: string;
+  NEXT_PUBLIC_API_END_POINT: string;
+  NEXT_PUBLIC_URL_LOGO: string;
+  NEXT_PUBLIC_BACKEND_URL: string;
+  NEXT_PUBLIC_API_VERSION: string;
+};
+
+const envStrict: EnvConfigStrict = {
+  NEXT_PUBLIC_URL: envConfig.NEXT_PUBLIC_URL || "http://localhost:3001",
+  NEXT_PUBLIC_API_ENDPOINT: envConfig.NEXT_PUBLIC_API_ENDPOINT,
+  NEXT_PUBLIC_API_END_POINT:
+    envConfig.NEXT_PUBLIC_API_END_POINT ||
+    `${envConfig.NEXT_PUBLIC_BACKEND_URL}/api/${envConfig.NEXT_PUBLIC_API_VERSION}`,
+  NEXT_PUBLIC_URL_LOGO:
+    envConfig.NEXT_PUBLIC_URL_LOGO || "https://placehold.co/200x80",
+  NEXT_PUBLIC_BACKEND_URL:
+    envConfig.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8081",
+  NEXT_PUBLIC_API_VERSION: envConfig.NEXT_PUBLIC_API_VERSION || "v1",
+};
+
+// Export under the same name used across the project
+export { envStrict as envConfig };
