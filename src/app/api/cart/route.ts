@@ -11,6 +11,21 @@ import { API_CONFIG } from "@/lib/api-config";
 // - API_CART_UPDATE_URL_TEMPLATE (e.g. /cart/items/{itemId})
 // - API_CART_DELETE_URL_TEMPLATE (e.g. /cart/items/{itemId})
 
+// Unified way to read optional template envs without scattering process.env
+function getTemplateEnv(name: string): string | undefined {
+  // Prefer centralized config if present; fall back to process.env
+  // Note: using process.env only inside this helper to avoid direct usage elsewhere
+  // @ts-ignore - allow flexible lookup for optional props
+  const fromConfig: string | undefined = (envConfig as any)?.[name];
+  // eslint-disable-next-line no-undef
+  const fromProcess: string | undefined = (process as any)?.env?.[name];
+  return (
+    (fromConfig && String(fromConfig).trim()) ||
+    (fromProcess && String(fromProcess).trim()) ||
+    undefined
+  );
+}
+
 function buildCandidates(templateEnv: string | undefined, fallbacks: string[]) {
   const candidates: string[] = [];
   if (templateEnv && templateEnv.trim() !== "") candidates.push(templateEnv);
@@ -20,7 +35,7 @@ function buildCandidates(templateEnv: string | undefined, fallbacks: string[]) {
 
 export async function GET(request: NextRequest) {
   const base = API_CONFIG.API_BASE_URL;
-  const template = process.env.API_CART_GET_URL_TEMPLATE; // e.g., /cart or /cart/me
+  const template = getTemplateEnv("API_CART_GET_URL_TEMPLATE"); // e.g., /cart or /cart/me
   const candidates = buildCandidates(template, [
     API_CONFIG.CART.GET,
     `${API_CONFIG.CART.GET}/me`,
@@ -46,7 +61,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const base = envConfig.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8081";
-  const template = process.env.API_CART_ADD_URL_TEMPLATE; // e.g., /cart/items
+  const template = getTemplateEnv("API_CART_ADD_URL_TEMPLATE"); // e.g., /cart/items
   const candidates = buildCandidates(template, [
     "/api/v1/cart/items",
     "/api/v1/cart",
@@ -77,7 +92,7 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   const base = API_CONFIG.API_BASE_URL;
-  const template = process.env.API_CART_UPDATE_URL_TEMPLATE; // e.g., /cart/items/{itemId}
+  const template = getTemplateEnv("API_CART_UPDATE_URL_TEMPLATE"); // e.g., /cart/items/{itemId}
   let body: any = null;
   try {
     body = await request.json();
@@ -121,7 +136,7 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   const base = API_CONFIG.API_BASE_URL;
-  const template = process.env.API_CART_DELETE_URL_TEMPLATE; // e.g., /cart/items/{itemId}
+  const template = getTemplateEnv("API_CART_DELETE_URL_TEMPLATE"); // e.g., /cart/items/{itemId}
 
   let body: any = null;
   try {
