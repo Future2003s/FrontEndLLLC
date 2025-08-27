@@ -1,10 +1,11 @@
 // API Configuration for Node.js Backend Integration
 // Based on API_DOCUMENTATION.md
+import { envConfig } from "@/config";
+
 export const API_CONFIG = {
-  // Base URLs
-  BACKEND_BASE_URL:
-    process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8081",
-  API_VERSION: process.env.NEXT_PUBLIC_API_VERSION || "v1",
+  // Base URLs (read from unified config)
+  BACKEND_BASE_URL: envConfig.NEXT_PUBLIC_BACKEND_URL,
+  API_VERSION: envConfig.NEXT_PUBLIC_API_VERSION,
 
   // Full API base URL
   get API_BASE_URL() {
